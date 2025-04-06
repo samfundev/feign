@@ -1095,39 +1095,6 @@
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <version>3.2.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-                <configuration>
-                  <toolchains>
-                    <jdk>
-                      <version>${main.java.version}</version>
-                    </jdk>
-                  </toolchains>
-                </configuration>
-              </execution>
-              <execution>
-                <id>test</id>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-                <phase>generate-test-sources</phase>
-                <configuration>
-                  <toolchains>
-                    <jdk>
-                      <version>${latest.java.version}</version>
-                    </jdk>
-                  </toolchains>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <jdkToolchain>

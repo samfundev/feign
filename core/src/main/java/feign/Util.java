@@ -121,6 +121,33 @@ public class Util {
 
   /** Identifies a method as a default instance method. */
   public static boolean isDefault(Method method) {
+    // Check for Android's desugar of default methods.
+    try {
+      String name = method.getDeclaringClass().getName() + "$-CC";
+      Class clazz = Class.forName(name, false, method.getDeclaringClass().getClassLoader());
+      java.lang.reflect.Method[] methods = clazz.getDeclaredMethods();
+      for (java.lang.reflect.Method m : methods) {
+        // The companion method will take the class as the first argument and then the rest of the
+        // original arguments
+        if (!m.getName().startsWith("$default$" + method.getName())
+            || m.getParameterCount() != method.getParameterCount() + 1) continue;
+
+        boolean paramsMatch = true;
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for (int i = 0; i < parameterTypes.length; i++) {
+          if (!parameterTypes[i].equals(m.getParameterTypes()[i + 1])) {
+            paramsMatch = false;
+            break;
+          }
+        }
+        if (!paramsMatch) continue;
+
+        return true;
+      }
+    } catch (ClassNotFoundException e) {
+      // Ignore
+    }
+
     // Default methods are public non-abstract, non-synthetic, and non-static instance methods
     // declared in an interface.
     // method.isDefault() is not sufficient for our usage as it does not check
